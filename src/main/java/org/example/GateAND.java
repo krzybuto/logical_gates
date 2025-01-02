@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class GateOR extends Gate {
+public class GateAND extends Gate {
 
     @Override
     public boolean calculate() {
-        return inputs.stream().reduce(false, (a, b) -> a || b);
+        return inputs.stream().reduce(true, (a, b) -> a && b);
     }
 }
