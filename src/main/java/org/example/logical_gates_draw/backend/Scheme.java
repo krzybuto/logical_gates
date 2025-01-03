@@ -18,6 +18,10 @@ public class Scheme {
         this.gates = new ArrayList<>();
     }
 
+    public int GetNumberOfGatesForLevel(int level) {
+        return (int)(this.gates.stream().filter(g -> g.getLevel() == level).count());
+    }
+
     private Gate InitGateFromLine(String line) {
         List<String> parts = List.of(line.split(";"));
         GateType type = GateType.fromInt(Integer.parseInt(parts.get(0)));
@@ -54,12 +58,14 @@ public class Scheme {
         List<Boolean> inputs = new ArrayList<>();
         List<Gate> nextGates = new ArrayList<>();
 
-        if(!parts.get(1).equals("-"))
-            inputs = Arrays.stream(parts.get(1).split(" "))
+        newGate.setLevel(Integer.parseInt(parts.get(1)));
+
+        if(!parts.get(2).equals("-"))
+            inputs = Arrays.stream(parts.get(2).split(" "))
                     .map(i -> i.equals("1"))
                     .collect(Collectors.toList());
-        if(!parts.get(2).equals("-")) {
-            List<Integer> next = Arrays.stream(parts.get(2).split(" "))
+        if(!parts.get(3).equals("-")) {
+            List<Integer> next = Arrays.stream(parts.get(3).split(" "))
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
 
@@ -84,6 +90,19 @@ public class Scheme {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Collections.reverse(this.gates);
+
+        int i = 0;
+        int currentLevel = 0;
+        for (Gate gate : this.gates) {
+            if(gate.getLevel() > currentLevel) {
+                i = 0;
+                currentLevel = gate.getLevel();
+            }
+            gate.setNumberInLevel(i);
+            i++;
+        }
     }
 
     public boolean ProcessFile(String filePath) {
@@ -94,7 +113,6 @@ public class Scheme {
     }
 
     private boolean Calculate() {
-        Collections.reverse(this.gates);
         Optional<Boolean> result = this.gates.stream().map(gate -> {
             boolean tempResult = gate.calculate();
             for (Gate nextGate : gate.getNext()) {

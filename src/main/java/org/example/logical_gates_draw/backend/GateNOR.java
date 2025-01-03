@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 public class GateNOR extends GateOR {
 
     public GateNOR() {
-        this.shape = new Image(getClass().getResource("/NOR.png").toExternalForm());
+        this.shape = new Image(getClass().getResource("/NOR_2.png").toExternalForm());
     }
     @Override
     public boolean calculate() {

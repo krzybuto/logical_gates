@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 public class GateNOT extends Gate{
 
     public GateNOT(){
-        this.shape = new Image(getClass().getResource("/NOT.png").toExternalForm());
+        this.shape = new Image(getClass().getResource("/NOT_2.png").toExternalForm());
     }
     @Override
     public boolean calculate() {

@@ -5,6 +5,6 @@ package org.example.logical_gates_draw.backend;
 public class Main {
     public static void main(String[] args) {
         Scheme scheme = new Scheme();
-        System.out.println(scheme.ProcessFile("input.txt") ? 1 : 0);
+        System.out.println(scheme.ProcessFile("input1.txt") ? 1 : 0);
     }
 }

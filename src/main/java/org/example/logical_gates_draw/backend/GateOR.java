@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 public class GateOR extends Gate {
 
     public GateOR() {
-        this.shape = new Image(getClass().getResource("/OR.png").toExternalForm());
+        this.shape = new Image(getClass().getResource("/OR_2.png").toExternalForm());
     }
 
     @Override

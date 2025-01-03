@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 public class GateAND extends Gate {
 
     public GateAND() {
-        this.shape = new Image(getClass().getResource("/AND.png").toExternalForm());
+        this.shape = new Image(getClass().getResource("/AND_2.png").toExternalForm());
     }
 
     @Override

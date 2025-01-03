@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 public class GateXOR extends Gate{
     public GateXOR() {
-        this.shape = new Image(getClass().getResource("/XOR.png").toExternalForm());
+        this.shape = new Image(getClass().getResource("/XOR_2.png").toExternalForm());
     }
     @Override
     public boolean calculate() {
