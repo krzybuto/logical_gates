@@ -22,6 +22,10 @@ public class Scheme {
         return (int)(this.gates.stream().filter(g -> g.getLevel() == level).count());
     }
 
+    public int GetMaxLevel() {
+        return this.gates.stream().map(g -> g.getLevel()).reduce((g1, g2) -> g2).get();
+    }
+
     private Gate InitGateFromLine(String line) {
         List<String> parts = List.of(line.split(";"));
         GateType type = GateType.fromInt(Integer.parseInt(parts.get(0)));
@@ -93,11 +97,11 @@ public class Scheme {
 
         Collections.reverse(this.gates);
 
-        int i = 0;
+        int i = 1;
         int currentLevel = 0;
         for (Gate gate : this.gates) {
             if(gate.getLevel() > currentLevel) {
-                i = 0;
+                i = 1;
                 currentLevel = gate.getLevel();
             }
             gate.setNumberInLevel(i);

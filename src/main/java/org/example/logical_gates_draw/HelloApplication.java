@@ -20,6 +20,8 @@ public class HelloApplication extends Application {
     private String level2Path = "C:\\Users\\Jacek\\IdeaProjects\\logical_gates_draw\\src\\main\\resources\\input2.txt";
     private String level3Path = "C:\\Users\\Jacek\\IdeaProjects\\logical_gates_draw\\src\\main\\resources\\input3.txt";
     private String level4Path = "C:\\Users\\Jacek\\IdeaProjects\\logical_gates_draw\\src\\main\\resources\\input4.txt";
+    private int width;
+    private int height;
 
     public static void main(String[] args) {
         launch(args);
@@ -89,7 +91,9 @@ public class HelloApplication extends Application {
 
     private Scene launchLevel(Stage stage, String fileName) {
         Group root = new Group();
-        Scene scene = new Scene(root,1280,1024, Color.web("6098f9"));
+        width = 1280;
+        height = 1024;
+        Scene scene = new Scene(root, width, height, Color.web("6098f9"));
 
         Text textInput = new Text();
         textInput.setText("WEJŚCIE UKŁADU");
@@ -155,6 +159,14 @@ public class HelloApplication extends Application {
         for(Gate gate : scheme.getGates()) {
             Image g = gate.draw();
             ImageView gView = new ImageView(g);
+
+            int gatesInLevel = scheme.GetNumberOfGatesForLevel(gate.getLevel());
+            int levels = scheme.GetMaxLevel() + 1;
+            gate.setPosY(gate.getNumberInLevel() * ((height - gatesInLevel * Gate.sizeY)/(gatesInLevel + 1) + Gate.sizeY) - Gate.sizeY/2);
+            gate.setPosX((gate.getLevel()+1) * ((width - levels * Gate.sizeX)/(levels + 1) + Gate.sizeX) - Gate.sizeX/2);
+
+//            gate.setPosX(100 + gate.getLevel() * (Gate.sizeX+60));
+//            gate.setPosY(100 + gate.getNumberInLevel() * (Gate.sizeY+30));
             gView.setX(gate.getPosX());
             gView.setY(gate.getPosY());
             root.getChildren().add(gView);

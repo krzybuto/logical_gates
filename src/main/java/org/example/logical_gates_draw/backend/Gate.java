@@ -28,13 +28,19 @@ public abstract class Gate {
         this.shape = new Image(getClass().getResource("/AND.png").toExternalForm());
     }
 
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+
     public int getPosX(){
-        posX = 100 + level * (Gate.sizeX+60);
         return posX;
     }
 
     public int getPosY(){
-        posY = 100 + numberInLevel * (Gate.sizeY+30);
         return posY;
     }
 
