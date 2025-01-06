@@ -23,4 +23,13 @@ public enum GateType {
         }
         throw new IllegalArgumentException("Nieznany kod statusu: " + code);
     }
+
+    public static GateType fromString(String code) {
+        for (GateType status : GateType.values()) {
+            if (status.toString().equals(code.toUpperCase())) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Nieznany kod statusu: " + code);
+    }
 }

@@ -11,7 +11,6 @@ public abstract class Gate {
     List<Boolean> inputs;
     List<Gate> next;
     Image shape;
-    static int count = 0;
     public final static int sizeX = 60;
     public final static int sizeY = 60;
     int level;
@@ -20,12 +19,16 @@ public abstract class Gate {
     int posX;
     int posY;
 
-    public Gate() {
+    public Gate(int count) {
         this.inputs = new ArrayList<>();
         this.next = new ArrayList<>();
-        this.id = count++;
+        this.id = count;
         this.level = 0;
-        this.shape = new Image(getClass().getResource("/AND.png").toExternalForm());
+        this.shape = new Image(getClass().getResource("/NULL.png").toExternalForm());
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setPosX(int posX) {
@@ -84,5 +87,20 @@ public abstract class Gate {
 
     public Image draw() {
         return this.shape;
+    }
+
+    public Image obstruct() {
+        return new Image(getClass().getResource("/NULL.png").toExternalForm());
+    }
+
+    public abstract Gate copy();
+
+    protected void copyBaseProperties(Gate target) {
+        target.setInputs(new ArrayList<>(this.inputs)); // Głębokie kopiowanie wejść
+        target.setNext(new ArrayList<>(this.next)); // Skopiowanie następników (ale pozostają referencje)
+        target.setLevel(this.level);
+        target.setNumberInLevel(this.numberInLevel);
+        target.setPosX(this.posX);
+        target.setPosY(this.posY);
     }
 }

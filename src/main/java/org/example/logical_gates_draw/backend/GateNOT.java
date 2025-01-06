@@ -4,7 +4,8 @@ import javafx.scene.image.Image;
 
 public class GateNOT extends Gate{
 
-    public GateNOT(){
+    public GateNOT(int count) {
+        super(count);
         this.shape = new Image(getClass().getResource("/NOT_2.png").toExternalForm());
     }
     @Override
@@ -13,5 +14,12 @@ public class GateNOT extends Gate{
             throw new IllegalArgumentException("Input too large");
         else
             return !inputs.get(0);
+    }
+
+    @Override
+    public Gate copy() {
+        GateNOT copy = new GateNOT(this.id);
+        this.copyBaseProperties(copy);
+        return copy;
     }
 }
