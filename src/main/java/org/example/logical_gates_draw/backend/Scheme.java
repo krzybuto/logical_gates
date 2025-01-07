@@ -6,26 +6,51 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Klasa reprezentująca schemat z bramkami logicznymi.
+ */
 public class Scheme {
 
     List<Gate> gates;
 
+    /**
+     * Zwraca listę bramek logicznych w schemacie.
+     * @return Lista bramek.
+     */
     public List<Gate> getGates() {
         return gates;
     }
 
+    /**
+     * Konstruktor klasy, inicjalizuje pustą listę bramek.
+     */
     public Scheme() {
         this.gates = new ArrayList<>();
     }
 
+    /**
+     * Zwraca liczbę bramek na danym poziomie.
+     * @param level Poziom w schemacie.
+     * @return Liczba bramek na poziomie.
+     */
     public int GetNumberOfGatesForLevel(int level) {
         return (int)(this.gates.stream().filter(g -> g.getLevel() == level).count());
     }
 
+    /**
+     * Zwraca maksymalny poziom w schemacie.
+     * @return Maksymalny poziom.
+     */
     public int GetMaxLevel() {
         return this.gates.stream().map(g -> g.getLevel()).reduce((g1, g2) -> g2).get();
     }
 
+    /**
+     * Inicjalizuje bramkę z linii tekstu.
+     * @param line Linia w pliku z danymi bramki.
+     * @param id Identyfikator bramki.
+     * @return Utworzona bramka.
+     */
     private Gate InitGateFromLine(String line, int id) {
         List<String> parts = List.of(line.split(";"));
         GateType type = GateType.fromInt(Integer.parseInt(parts.get(0)));
@@ -85,6 +110,10 @@ public class Scheme {
         return newGate;
     }
 
+    /**
+     * Inicjalizuje bramki na podstawie pliku.
+     * @param path Ścieżka do pliku.
+     */
     private void InitGatesFromFile(String path) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
@@ -112,6 +141,10 @@ public class Scheme {
         }
     }
 
+    /**
+     * Inicjalizuje bramki na podstawie łańcucha tekstowego.
+     * @param gates Łańcuch tekstowy reprezentujący bramki.
+     */
     public void InitGatesFromString(String gates) {
         if (!this.gates.isEmpty())
             this.gates.clear();
@@ -135,6 +168,11 @@ public class Scheme {
 
     }
 
+    /**
+     * Przetwarza plik z bramkami.
+     * @param filePath Ścieżka do pliku.
+     * @return Wynik obliczeń po wczytaniu pliku.
+     */
     public boolean ProcessFile(String filePath) {
         if (!this.gates.isEmpty())
             this.gates.clear();
@@ -142,6 +180,10 @@ public class Scheme {
         return Calculate();
     }
 
+    /**
+     * Przeprowadza obliczenia na schemacie.
+     * @return Wynik obliczeń.
+     */
     public boolean Calculate() {
         for (Gate gate1 : this.gates) {
             if (gate1.level != 0) {
@@ -160,6 +202,12 @@ public class Scheme {
         return result.get();
     }
 
+    /**
+     * Zmienia typ bramki i przelicza wynik.
+     * @param gateId Identyfikator bramki.
+     * @param newGateType Nowy typ bramki.
+     * @return Wynik po zmianie typu.
+     */
     public boolean ChangeGateTypeAndCalculate(int gateId, GateType newGateType) {
         for (int i = 0; i < gates.size(); i++) {
             Gate gate = gates.get(i);
@@ -206,6 +254,13 @@ public class Scheme {
         return Calculate();
     }
 
+    /**
+     * Zmienia wejście bramki i przelicza wynik.
+     * @param gateId Identyfikator bramki.
+     * @param inputId Indeks wejścia.
+     * @param newInput Nowa wartość wejścia.
+     * @return Wynik po zmianie wejścia.
+     */
     public boolean ChangeGateInputAndCalculate(int gateId, int inputId, boolean newInput) {
         for (int i = 0; i < gates.size(); i++) {
             Gate gate = gates.get(i);

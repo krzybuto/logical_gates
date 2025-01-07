@@ -31,8 +31,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * Klasa główna aplikacji służącej do rysowania i symulacji bramek logicznych.
+ * Aplikacja wykorzystuje bibliotekę JavaFX do tworzenia interfejsu użytkownika,
+ * umożliwiając wybór poziomów, rozpoczęcie gry i wyświetlanie wyników.
+ */
 public class HelloApplication extends Application {
-
+    /**
+     * Lista ścieżek do plików z poziomami gry.
+     */
     private final List<String> levelPaths = new ArrayList<>(List.of(
             "C:\\Users\\Jacek\\IdeaProjects\\logical_gates_draw\\src\\main\\resources\\input1.txt",
             "C:\\Users\\Jacek\\IdeaProjects\\logical_gates_draw\\src\\main\\resources\\input2.txt",
@@ -42,28 +49,76 @@ public class HelloApplication extends Application {
             "C:\\Users\\Jacek\\IdeaProjects\\logical_gates_draw\\src\\main\\resources\\input6.txt"
     ));
 
+    /**
+     * Szerokość okna gry.
+     */
     private int width;
+
+    /**
+     * Wysokość okna gry.
+     */
     private int height;
+
+    /**
+     * Wynik gry.
+     */
     private int score;
 
+    /**
+     * Obiekt losowy wykorzystywany do generowania przypadkowych elementów.
+     */
     private Random random;
 
+    /**
+     * Zmienna przechowująca wybraną wartość logiczną.
+     */
     private boolean chosenValue;
 
+    /**
+     * Czas gry w sekundach.
+     */
     private int gameTimeInSeconds = 0;
+
+    /**
+     * Całkowity czas gry w sekundach.
+     */
     private int totalGameTimeInSeconds = 0;
 
+    /**
+     * Zmienna informująca o wygranej w grze.
+     */
     private boolean hasWon = false;
 
-    private  Timeline timer;
+    /**
+     * Zegar do odliczania czasu gry.
+     */
+    private Timeline timer;
+
+    /**
+     * Obiekt tekstowy wyświetlający czas gry.
+     */
     Text infoTime;
 
+    /**
+     * Typ zadania w grze.
+     */
     private TaskType taskType = TaskType.GATE;
 
+    /**
+     * Główna metoda uruchamiająca aplikację.
+     *
+     * @param args argumenty wiersza poleceń
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Inicjalizuje i wyświetla główne okno aplikacji.
+     *
+     * @param stage główny etap aplikacji
+     * @throws Exception wyjątek, który może zostać zgłoszony podczas inicjalizacji aplikacji
+     */
     @Override
     public void start(Stage stage) throws Exception {
         random = new Random();
@@ -90,6 +145,12 @@ public class HelloApplication extends Application {
 
     }
 
+    /**
+     * Tworzy główne menu gry.
+     *
+     * @param stage główny etap aplikacji
+     * @return scena głównego menu
+     */
     private Scene mainMenu(Stage stage) {
         Group root = new Group();
         Scene scene = new Scene(root,1280,1024, Color.web("6098f9"));
@@ -178,6 +239,14 @@ public class HelloApplication extends Application {
         return scene;
     }
 
+    /**
+     * Inicjalizuje i wyświetla scenę symulacji bramek logicznych.
+     * Scena ta pozwala na wprowadzenie danych wejściowych dla bramek logicznych,
+     * obliczenie wyników oraz ich wizualizację.
+     *
+     * @param stage główny etap aplikacji
+     * @return scena symulacji bramek logicznych
+     */
     private Scene startSimulation(Stage stage) {
         width = 1280;
         height = 1024;
@@ -249,6 +318,13 @@ public class HelloApplication extends Application {
         return scene;
     }
 
+    /**
+     * Wyświetla scenę z pomocą dotyczącą wprowadzania schematów bramek logicznych.
+     * Zawiera instrukcje dotyczące formatowania danych wejściowych i opis działania aplikacji.
+     *
+     * @param stage główny etap aplikacji
+     * @return scena pomocy
+     */
     private Scene displaySchemeHelp(Stage stage) {
         VBox helpLayout = new VBox();
         helpLayout.setPrefWidth(width/2);
@@ -304,6 +380,13 @@ public class HelloApplication extends Application {
         return scene;
     }
 
+    /**
+     * Tworzy scenę gry na podstawie wybranego poziomu i inicjalizuje odpowiednie elementy interfejsu użytkownika.
+     *
+     * @param stage   Etap, na którym zostanie wyświetlona scena.
+     * @param chosenLevel Poziom, który został wybrany przez użytkownika.
+     * @return Scena z odpowiednimi elementami, zależnie od wybranego poziomu.
+     */
     private Scene launchLevel(Stage stage, int chosenLevel) {
         String fileName = levelPaths.get(chosenLevel - 1);
         Scheme scheme = new Scheme();
@@ -534,6 +617,14 @@ public class HelloApplication extends Application {
         return scene;
     }
 
+    /**
+     * Wyświetla schemat układu logicznego na ekranie, rysując bramki logiczne i łączące je linie.
+     *
+     * @param root   Korzeń (Pane) na którym będą wyświetlane elementy wizualne.
+     * @param scheme Obiekt reprezentujący schemat układu logicznego.
+     * @param vBoxHeight Wysokość obszaru, w którym będą rysowane elementy.
+     * @param vBoxWidth Szerokość obszaru, w którym będą rysowane elementy.
+     */
     private void displayScheme(Pane root, Scheme scheme, int vBoxHeight, int vBoxWidth) {
         for(Gate gate : scheme.getGates()) {
             int gatesInLevel = scheme.GetNumberOfGatesForLevel(gate.getLevel());
@@ -583,6 +674,12 @@ public class HelloApplication extends Application {
         }
     }
 
+    /**
+     * Tworzy scenę, na której użytkownik może wybrać poziom gry.
+     *
+     * @param stage Etap, na którym zostanie wyświetlona scena.
+     * @return Scena z przyciskami umożliwiającymi wybór poziomu.
+     */
     private Scene chooseLevel(Stage stage){
         Group root = new Group();
         Scene scene = new Scene(root,1280,1024, Color.web("6098f9"));
@@ -640,7 +737,13 @@ public class HelloApplication extends Application {
         return scene;
     }
 
-    //Tworzenie sceny z wynikami po każdym poziomi
+    /**
+     * Tworzy scenę z wynikami po zakończeniu poziomu gry.
+     *
+     * @param stage Etap, na którym zostanie wyświetlona scena.
+     * @param chosenLevel Poziom, który został zakończony.
+     * @return Scena z wynikami, przyciskami umożliwiającymi przejście do następnego poziomu, powtórzenie poziomu lub powrót do menu głównego.
+     */
     private Scene scoreMenu (Stage stage, int chosenLevel) {
 
         Group root = new Group();
