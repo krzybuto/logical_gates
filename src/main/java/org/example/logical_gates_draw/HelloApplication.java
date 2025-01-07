@@ -3,11 +3,17 @@ package org.example.logical_gates_draw;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -22,6 +28,7 @@ import org.example.logical_gates_draw.backend.Scheme;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class HelloApplication extends Application {
@@ -129,10 +136,25 @@ public class HelloApplication extends Application {
                         "-fx-text-fill: black;"
         );
 
+        Button goToSimulation = new Button("Symulacja");
+        goToSimulation.setOnAction(e -> stage.setScene(startSimulation(stage)));
+        goToSimulation.setLayoutX(515);
+        goToSimulation.setLayoutY(510);
+        goToSimulation.setPrefWidth(250);
+        goToSimulation.setPrefHeight(100);
+        goToSimulation.setFont(Font.font("Arial",30));
+        goToSimulation.setStyle(
+                "-fx-background-color: #006ab5;" +
+                        "-fx-border-color: black;" +
+                        "-fx-border-width: 5px;" +
+                        "-fx-border-radius: 5px;" +
+                        "-fx-text-fill: black;"
+        );
+
         Button goToExit = new Button("Wyjdź");
         goToExit.setOnAction(e -> System.exit(0));
         goToExit.setLayoutX(515);
-        goToExit.setLayoutY(510);
+        goToExit.setLayoutY(615);
         goToExit.setPrefWidth(250);
         goToExit.setPrefHeight(100);
         goToExit.setFont(Font.font("Arial",30));
@@ -149,8 +171,135 @@ public class HelloApplication extends Application {
 
         root.getChildren().add(goToLevel);
         root.getChildren().add(goToChooseLevel);
+        root.getChildren().add(goToSimulation);
         root.getChildren().add(goToExit);
         root.getChildren().add(title);
+
+        return scene;
+    }
+
+    private Scene startSimulation(Stage stage) {
+        width = 1280;
+        height = 1024;
+
+        VBox leftColumn = new VBox(10);
+        leftColumn.setPrefWidth(width * 0.3); // 30% of scene width
+        leftColumn.setStyle("-fx-background-color: lightgray; -fx-padding: 10;");
+
+        Pane rightColumn = new Pane();
+        rightColumn.setPrefWidth(width * 0.7); // 70% of scene width
+        rightColumn.setStyle("-fx-padding: 10;");
+
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(leftColumn, rightColumn);
+
+        HBox.setHgrow(leftColumn, Priority.ALWAYS);
+        HBox.setHgrow(rightColumn, Priority.ALWAYS);
+
+        Group root = new Group(hbox);
+        Scene scene = new Scene(root, width, height, Color.web("6098f9"));
+
+        Scheme scheme = new Scheme();
+        TextArea schemeField = new TextArea();
+        schemeField.setPrefWidth(width * 0.3);
+        schemeField.setPrefHeight(height - 180);
+        schemeField.setOnKeyPressed(e -> {
+            if (Objects.requireNonNull(e.getCode()) == KeyCode.ENTER) {
+                if (!schemeField.getText().isBlank()) {
+                    rightColumn.getChildren().clear();
+                    scheme.InitGatesFromString(schemeField.getText());
+                    scheme.Calculate();
+                    displayScheme(rightColumn, scheme, height, (int) (width * 0.3));
+                }
+            }
+        });
+
+        Button submitButton = new Button("Symuluj");
+        submitButton.setPrefWidth(width * 0.3);
+        submitButton.setPrefHeight(40);
+        submitButton.setOnAction(e -> {
+            if(!schemeField.getText().isBlank()) {
+                rightColumn.getChildren().clear();
+                scheme.InitGatesFromString(schemeField.getText());
+                scheme.Calculate();
+                displayScheme(rightColumn, scheme, height, (int) (width * 0.3));
+            }
+        });
+
+        Button helpButton = new Button("Pomoc");
+        helpButton.setPrefWidth(width * 0.3);
+        helpButton.setPrefHeight(40);
+        helpButton.setOnAction(e -> {
+            stage.setScene(displaySchemeHelp(stage));
+        });
+
+        Button returnButton = new Button("Powrót");
+        returnButton.setPrefWidth(width * 0.3);
+        returnButton.setPrefHeight(40);
+        returnButton.setOnAction(e -> {
+            stage.setScene(mainMenu(stage));
+        });
+
+
+        leftColumn.getChildren().add(schemeField);
+        leftColumn.getChildren().add(submitButton);
+        leftColumn.getChildren().add(helpButton);
+        leftColumn.getChildren().add(returnButton);
+
+        return scene;
+    }
+
+    private Scene displaySchemeHelp(Stage stage) {
+        VBox helpLayout = new VBox();
+        helpLayout.setPrefWidth(width/2);
+        helpLayout.setPrefHeight(height);
+        helpLayout.setAlignment(Pos.CENTER);
+        helpLayout.setLayoutX(width/4);
+
+        Group root = new Group(helpLayout);
+        Scene scene = new Scene(root, width, height, Color.web("6098f9"));
+
+        TextArea helpField = new TextArea();
+        helpField.setText("""
+                Aby zainicjować bramkę, proszę podać ciąg wejściowy w następującym formacie:
+                                
+                typ;poziom;wejścia;następneBramki
+                            
+                Gdzie:
+                - typ: Liczba całkowita reprezentująca typ bramki:
+                    0 - AND
+                    1 - NAND
+                    2 - OR
+                    3 - NOR
+                    4 - XOR
+                    5 - XNOR
+                    6 - NOT
+                            
+                - poziom: Liczba całkowita reprezentująca poziom bramki w układzie (np. 0, 1, 2 itd.)
+                            
+                - wejścia: Lista wartości wejściowych rozdzielona spacjami (np. "1 0 1") lub "-" jeśli brak wejść.
+                            
+                - następneBramki: Lista ID bramek, do których ta bramka prowadzi, rozdzielona spacjami, lub "-" jeśli brak następnych bramek.
+                            
+                Przykład:
+                "0;1;1 0 1;2 3" zainicjuje bramkę AND na poziomie 1 z wejściami 1, 0 i 1, prowadzącą do bramek o ID 2 i 3.
+                            
+                Proszę podać kolejne bramki w kolejnych wierszach.
+                ID bramki to numer linii, w której jest ona opisana, zaczynając od 0.
+                """);
+        helpField.setEditable(false);
+        helpField.setWrapText(true);
+        helpField.setPrefHeight((double) height / 2);
+
+        Button returnButton = new Button("Powrót");
+        returnButton.setPrefWidth(width * 0.3);
+        returnButton.setPrefHeight(40);
+        returnButton.setOnAction(e -> {
+            stage.setScene(startSimulation(stage));
+        });
+
+        helpLayout.getChildren().add(helpField);
+        helpLayout.getChildren().add(returnButton);
 
         return scene;
     }
@@ -383,6 +532,55 @@ public class HelloApplication extends Application {
         root.getChildren().add(submitButton);
 
         return scene;
+    }
+
+    private void displayScheme(Pane root, Scheme scheme, int vBoxHeight, int vBoxWidth) {
+        for(Gate gate : scheme.getGates()) {
+            int gatesInLevel = scheme.GetNumberOfGatesForLevel(gate.getLevel());
+            int levels = scheme.GetMaxLevel() + 1;
+            gate.setPosY(gate.getNumberInLevel() * ((height - 100 - gatesInLevel * Gate.sizeY)/(gatesInLevel + 1) + Gate.sizeY) - Gate.sizeY/2);
+            gate.setPosX((gate.getLevel()+1) * ((width - vBoxWidth - levels * Gate.sizeX)/(levels + 1) + Gate.sizeX) - Gate.sizeX/2);
+
+            Image g = gate.draw();
+            ImageView gView = new ImageView(g);
+
+            gView.setX(gate.getPosX());
+            gView.setY(gate.getPosY());
+            root.getChildren().add(gView);
+
+            if (gate.getLevel() == 0) {
+                int numberOfGateInputs = gate.getInputs().isEmpty() ? 1 : gate.getInputs().size();
+                int sizeYPerInput = Gate.sizeY / numberOfGateInputs;
+                int k = 1;
+                for (boolean input : gate.getInputs()) {
+                    Text inputText = new Text();
+                    inputText.setText(MessageFormat.format("{0}", input ? 1 : 0));
+                    inputText.setX(gate.getPosX() - Gate.sizeX / numberOfGateInputs);
+                    inputText.setY(gate.getPosY() + sizeYPerInput * k);
+                    k++;
+                    inputText.setFont(Font.font("Verdana", sizeYPerInput));
+                    root.getChildren().add(inputText);
+                }
+            }
+
+            if(gate.getLevel() == levels - 1) {
+                Text inputText = new Text();
+                inputText.setText(MessageFormat.format("{0}", gate.calculate() ? 1 : 0));
+                inputText.setX(gate.getPosX() + Gate.sizeX + 10);
+                inputText.setY(gate.getPosY() + Gate.sizeY / 2);
+                inputText.setFont(Font.font("Verdana", 30));
+                root.getChildren().add(inputText);
+
+            }
+        }
+
+        for(Gate gate : scheme.getGates()) {
+            for(Gate next : gate.getNext()) {
+                Line line = new Line(gate.getPosX() + Gate.sizeX, gate.getPosY() + Gate.sizeY/2,
+                        next.getPosX(), next.getPosY() + Gate.sizeY/2);
+                root.getChildren().add(line);
+            }
+        }
     }
 
     private Scene chooseLevel(Stage stage){

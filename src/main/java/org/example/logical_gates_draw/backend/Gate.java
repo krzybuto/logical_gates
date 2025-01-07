@@ -2,7 +2,6 @@ package org.example.logical_gates_draw.backend;
 
 import javafx.scene.image.Image;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 

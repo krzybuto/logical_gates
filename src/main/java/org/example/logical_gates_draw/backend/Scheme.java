@@ -112,6 +112,29 @@ public class Scheme {
         }
     }
 
+    public void InitGatesFromString(String gates) {
+        if (!this.gates.isEmpty())
+            this.gates.clear();
+        int id = 0;
+        List<String> lines = List.of(gates.split("\n"));
+        for(String line : lines) {
+            InitGateFromLine(line, id);
+            id ++;
+        }
+        Collections.reverse(this.gates);
+        int i = 1;
+        int currentLevel = 0;
+        for (Gate gate : this.gates) {
+            if(gate.getLevel() > currentLevel) {
+                i = 1;
+                currentLevel = gate.getLevel();
+            }
+            gate.setNumberInLevel(i);
+            i++;
+        }
+
+    }
+
     public boolean ProcessFile(String filePath) {
         if (!this.gates.isEmpty())
             this.gates.clear();

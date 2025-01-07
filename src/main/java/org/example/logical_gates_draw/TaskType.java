@@ -1,7 +1,5 @@
 package org.example.logical_gates_draw;
 
-import org.example.logical_gates_draw.backend.GateType;
-
 public enum TaskType {
     OUTPUT(0),
     INPUT(1),
